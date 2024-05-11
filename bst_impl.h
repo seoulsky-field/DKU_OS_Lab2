@@ -48,14 +48,29 @@ class BST : public DefaultBST {
 class CoarseBST : public DefaultBST {
 	private:
 		// 멤버 변수 추가 선언 가능
-		// pthread_mutex_t mutex_lock;
+		Node* root = nullptr;
+		int idx = 0;
+		pthread_mutex_t mutex_lock;
 	public:
 		// 멤버 함수 추가 선언 가능
+		CoarseBST() {
+			pthread_mutex_init(&mutex_lock, nullptr);
+		}
+
 		void insert(int key, int value) override;
 		int lookup(int key) override;
 		void remove(int key) override;
 		void traversal(KVC* arr) override;
 
+		void inorder_algorithm(KVC* arr, Node* node) {
+			if (node == nullptr) {
+				return;
+			}
+
+			inorder_algorithm(arr, node->left);
+			arr[idx++] = {node->key, node->value, node->upd_cnt};
+			inorder_algorithm(arr, node->right);
+		}
 };
 
 /// @brief FineBST는 FineNode를 정의하여 사용하길 권장한다.
