@@ -75,7 +75,18 @@ class CoarseBST : public DefaultBST {
 
 /// @brief FineBST는 FineNode를 정의하여 사용하길 권장한다.
 struct FineNode : public Node {
-    // 멤버 변수 추가 가능
+	FineNode* left;
+	FineNode* right;
+    pthread_mutex_t mutex_lock;
+
+	FineNode(int key, int value, int upd_cnt, FineNode* left, FineNode* right) {
+		this->key = key;
+		this->value = value;
+		this->upd_cnt = upd_cnt;
+		this->left = left;
+		this->right = right;
+		pthread_mutex_init(&mutex_lock, nullptr);
+	}
 };
 
 /**
@@ -88,12 +99,29 @@ struct FineNode : public Node {
 class FineBST : public DefaultBST {
 	private:
 		// 멤버 변수 추가 선언 가능
+		FineNode* root = nullptr;
+		pthread_mutex_t root_nullptr_lock;
+		int idx = 0;
 
 	public:
 		// 멤버 함수 추가 선언 가능
+		FineBST() {
+			pthread_mutex_init(&root_nullptr_lock, nullptr);
+		}
+
 		void insert(int key, int value) override;
 		int lookup(int key) override;
 		void remove(int key) override;
 		void traversal(KVC* arr) override;
+
+		void inorder_algorithm(KVC* arr, FineNode* node) {
+			if (node == nullptr) {
+				return;
+			}
+
+			inorder_algorithm(arr, node->left);
+			arr[idx++] = {node->key, node->value, node->upd_cnt};
+			inorder_algorithm(arr, node->right);
+		}
 };
 #endif
