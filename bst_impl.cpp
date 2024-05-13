@@ -391,10 +391,12 @@ void FineBST::remove(int key){
 			}else if (parent_node->left == current_node) {
 				pthread_mutex_lock(&parent_node->mutex_lock);
 				parent_node->left = nullptr;
+				// fine-grained unlock for parent_node
 				pthread_mutex_unlock(&parent_node->mutex_lock);
 			}else {
 				pthread_mutex_lock(&parent_node->mutex_lock);
 				parent_node->right = nullptr;
+				// fine-grained unlock for parent_node
 				pthread_mutex_unlock(&parent_node->mutex_lock);
 			}
 			// fine-grained unlock for current_node
@@ -403,12 +405,16 @@ void FineBST::remove(int key){
 			if (parent_node == nullptr) {
 				root = current_node->right;
 			}else if (parent_node->left == current_node) {
+				// fine-grained lock for parent_node
 				pthread_mutex_lock(&parent_node->mutex_lock);
 				parent_node->left = current_node->right;
+				// fine-grained unlock for parent_node
 				pthread_mutex_unlock(&parent_node->mutex_lock);
 			}else {
+				// fine-grained lock for parent_node
 				pthread_mutex_lock(&parent_node->mutex_lock);
 				parent_node->right = current_node->right;
+				// fine-grained unlock for parent_node
 				pthread_mutex_unlock(&parent_node->mutex_lock);
 			}
 			// fine-grained unlock for current_node
@@ -417,11 +423,17 @@ void FineBST::remove(int key){
 			if (parent_node == nullptr) {
 				root = current_node->left;
 			}else if (parent_node->left == current_node) {
+				// fine-grained lock for parent_node
 				pthread_mutex_lock(&parent_node->mutex_lock);
 				parent_node->left = current_node->left;
+				// fine-grained unlock for parent_node
 				pthread_mutex_unlock(&parent_node->mutex_lock);
 			}else {
+				// fine-grained lock for parent_node
+				pthread_mutex_lock(&parent_node->mutex_lock);
 				parent_node->right = current_node->left;
+				// fine-grained unlock for parent_node
+				pthread_mutex_unlock(&parent_node->mutex_lock);
 			}
 			// fine-grained unlock for current_node
 			pthread_mutex_unlock(&current_node->mutex_lock);
