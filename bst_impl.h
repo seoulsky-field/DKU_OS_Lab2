@@ -17,17 +17,16 @@
  */
 class BST : public DefaultBST {
 	private:
-		// 멤버 변수 추가 선언 가능
 		Node* root = nullptr;
 		int idx = 0;
 
 	public:
-		// 멤버 함수 추가 선언 가능
 		void insert(int key, int value) override;
 		int lookup(int key) override;
 		void remove(int key) override;
 		void traversal(KVC* arr) override;
 
+		// 원활한 중위 순회를 위해 사용한 재귀 함수
 		void inorder_algorithm(KVC* arr, Node* node) {
 			if (node == nullptr) {
 				return;
@@ -47,12 +46,10 @@ class BST : public DefaultBST {
  */
 class CoarseBST : public DefaultBST {
 	private:
-		// 멤버 변수 추가 선언 가능
 		Node* root = nullptr;
 		int idx = 0;
 		pthread_mutex_t mutex_lock;
 	public:
-		// 멤버 함수 추가 선언 가능
 		CoarseBST() {
 			pthread_mutex_init(&mutex_lock, nullptr);
 		}
@@ -62,6 +59,7 @@ class CoarseBST : public DefaultBST {
 		void remove(int key) override;
 		void traversal(KVC* arr) override;
 
+		// 원활한 중위 순회를 위해 사용한 재귀 함수
 		void inorder_algorithm(KVC* arr, Node* node) {
 			if (node == nullptr) {
 				return;
@@ -79,6 +77,7 @@ struct FineNode : public Node {
 	FineNode* right;
     pthread_mutex_t mutex_lock;
 
+	// 구조체 생성자 : Node에 존재하는 mutex_lock의 초기 값 입력 받지 않고 초기화 하고자 선언
 	FineNode(int key, int value, int upd_cnt, FineNode* left, FineNode* right) {
 		this->key = key;
 		this->value = value;
@@ -98,13 +97,12 @@ struct FineNode : public Node {
  */
 class FineBST : public DefaultBST {
 	private:
-		// 멤버 변수 추가 선언 가능
 		FineNode* root = nullptr;
+		// root가 nullptr인 경우에서 동시 삽입할 때를 위한 lock
 		pthread_mutex_t root_nullptr_lock;
 		int idx = 0;
 
 	public:
-		// 멤버 함수 추가 선언 가능
 		FineBST() {
 			pthread_mutex_init(&root_nullptr_lock, nullptr);
 		}
@@ -114,6 +112,7 @@ class FineBST : public DefaultBST {
 		void remove(int key) override;
 		void traversal(KVC* arr) override;
 
+		// 원활한 중위 순회를 위해 사용한 재귀 함수
 		void inorder_algorithm(KVC* arr, FineNode* node) {
 			if (node == nullptr) {
 				return;
